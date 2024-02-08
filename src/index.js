@@ -18,11 +18,12 @@ app.get('/', (req, res) => {
 
 io.on("connection", socket => {
 
-    console.log("Clientes conectados: ", io.engine.clientsCount);
+    /* console.log("Clientes conectados: ", io.engine.clientsCount);
     console.log("ID del socket conectado: ", socket.id);
+   
     socket.on("hello", (arg) => {
-        console.log(`Alguien dijo hola ${arg}`);   
-    });
+        console.log(`Alguien dijo hola ${arg}`);
+    }); */
 
     // socket.on("disconnect", () => {
     //     console.log("El socket " + socket.id + " se ha desconectado.");
@@ -31,6 +32,20 @@ io.on("connection", socket => {
     // socket.conn.once("upgrade", () => {
     //     console.log("Hemos pasado de HTTP Long-Polling a ", socket.conn.transport.name);
     // });
+
+
+
+    socket.on("server", args => {
+        console.log(args);
+        // Emision en respuesta a una solicitud
+        socket.emit("response", "Enviamos una respuesta a tu emision 😎.");
+    });
+
+    // Emisión básica
+    socket.emit("welcome", "Ahora estás conectado 😎.");
+
+    // Emisión a todos
+    io.emit("everyone", socket.id + " se ha conectado 👀");
 
 });
 
