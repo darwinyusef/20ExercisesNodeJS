@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selección de Elementos del DOM</title>
+  <style>
+    .miClase {
+      color: blue;
+    }
+  </style>
+</head>
+<body>
+  <div id="miElemento">Elemento con ID</div>
+  <div class="miClase">Elemento con Clase</div>
+  <p>Elemento de Párrafo 1</p>
+  <p>Elemento de Párrafo 2</p>
+
+  <script>
+    // getElementById
+    const elementById = document.getElementById('miElemento');
+    console.log("getElementById:", elementById);
+
+    // getElementsByClassName
+    const elementsByClassName = document.getElementsByClassName('miClase');
+    console.log("getElementsByClassName:", elementsByClassName);
+
+    // getElementsByTagName
+    const elementsByTagName = document.getElementsByTagName('p');
+    console.log("getElementsByTagName:", elementsByTagName);
+
+    // querySelector
+    const elementByQuerySelector = document.querySelector('#miElemento');
+    console.log("querySelector:", elementByQuerySelector);
+
+    // querySelectorAll
+    const elementsByQuerySelectorAll = document.querySelectorAll('.miClase');
+    console.log("querySelectorAll:", elementsByQuerySelectorAll);
+  </script>
+</body>
+</html>
