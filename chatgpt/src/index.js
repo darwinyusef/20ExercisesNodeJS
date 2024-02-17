@@ -7,9 +7,13 @@ const sqlite3 = require('sqlite3').verbose();
 const dotenv = require('dotenv');
 const socketIO = require('socket.io');
 const http = require('http');
+//agregar openai
+const OpenAI = require('openai');
 
 // Configurar dotenv para cargar variables de entorno
 dotenv.config();
+
+
 
 // Configurar el servidor Express
 const app = express();
@@ -26,31 +30,54 @@ app.use(cors());
 
 app.use(morgan('dev'));
 app.use(bodyParser.json());
+// Define la ruta pública para los archivos estáticos
+app.use(express.static('public'));
+
 
 // Configurar la base de datos SQLite
 const db = new sqlite3.Database('./db_sqlite.sqlite');
 
 
-const OpenAI = require("openai");
 
-// Replace with your actual API key
-
-const openai = new OpenAI(process.env.OPENAI_API_KEY);
-
-// Example usage: Send a request to the gpt-3.5-turbo model
-openai.createCompletion({
-  engine: "gpt-3.5-turbo",
-  model: "gpt-3.5-turbo",
-  prompt: "Write a poem about the night sky.",
-  max_tokens: 150,
-  temperature: 0.7,
-})
-.then((response) => {
-  console.log(response.choices[0].text);
-})
-.catch((error) => {
-  console.error(error);
+const openai = new OpenAI({
+    apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
 });
+
+
+
+// Rutas a las páginas HTML
+app.get('/page', (req, res) => {
+  res.sendFile('./index.html', { root: 'public' });
+});
+
+app.get('/response/', async (req, res) => {
+    const mensaje = req.query.mensaje == undefined ? req.query.mensaje : 'peliculas';
+    const cantidad = req.query.cantidad | 1;
+
+    const chatCompletion = await openai.chat.completions.create({
+        messages: [{ role: 'user', content: `primero elimina todas las introducciones solo quiero un json, 
+        nunca debes debes incluir en el json { "peliculas": [] } solo agrega [],  
+        limita a entregarme solo el json nada mas, 
+        quiero saber aleatoriamente ${cantidad} de ${mensaje} dame los nombres y fechas, los premios serán listados separados por (;) una unica calificación sera de 0 a 5. tambien debes incluir un numero aleatorio entre 500 y 511 e incluirlo en num_aleatorio, todo esto en json para cada uno internamente en el array así:   
+            [{
+              "id": 1,
+              "nombre": "Pirates of the Caribbean: At World's End",
+              "fecha": año aleatorio,
+              "num_aleatorio": 500 a 511,
+              "calificacion": de 0 a 5,
+              "premios": "Teen Choice Award; People's Choice Award; MTV Movie Award"
+            }],` }],
+        model: 'gpt-3.5-turbo',
+    });
+    res.status(201).json({ response_gpt: chatCompletion.choices[0].message });
+});
+
+
+
+
+
+
+
 
 
 
