@@ -51,21 +51,21 @@ app.get('/page', (req, res) => {
 });
 
 app.get('/response/', async (req, res) => {
-    const mensaje = req.query.mensaje == undefined ? req.query.mensaje : 'peliculas';
+    const mensaje = req.query.mensaje;
     const cantidad = req.query.cantidad | 1;
-
+    console.log(mensaje);
     const chatCompletion = await openai.chat.completions.create({
         messages: [{ role: 'user', content: `primero elimina todas las introducciones solo quiero un json, 
-        nunca debes debes incluir en el json { "peliculas": [] } solo agrega [],  
+        nunca debes debes incluir en el json { "": [] } solo agrega [],  
         limita a entregarme solo el json nada mas, 
-        quiero saber aleatoriamente ${cantidad} de ${mensaje} dame los nombres y fechas, los premios serán listados separados por (;) una unica calificación sera de 0 a 5. tambien debes incluir un numero aleatorio entre 500 y 511 e incluirlo en num_aleatorio, todo esto en json para cada uno internamente en el array así:   
+        quiero saber aleatoriamente los más populares, un total de ${cantidad}  recomendaciones de ${mensaje} dame los nombres y fechas, los premios serán listados separados por (;) una unica calificación sera de 0 a 5. tambien debes incluir un numero aleatorio entre 500 y 511 e incluirlo en num_aleatorio, todo esto en json para cada uno internamente en el array así:   
             [{
               "id": 1,
-              "nombre": "Pirates of the Caribbean: At World's End",
+              "nombre": "nombre completo de la pelicula ó canción",
               "fecha": año aleatorio,
               "num_aleatorio": 500 a 511,
               "calificacion": de 0 a 5,
-              "premios": "Teen Choice Award; People's Choice Award; MTV Movie Award"
+              "premios": "lista de premios separado por (;) punto y coma"
             }],` }],
         model: 'gpt-3.5-turbo',
     });
