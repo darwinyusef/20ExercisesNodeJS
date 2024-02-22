@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Activity Monitor</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div style="display: flex;">
+    <div>
+      <h2>Estadísticas</h2>
+      <p id="maxValue">Máximo: -</p>
+      <p id="minValue">Mínimo: -</p>
+    </div>
+    <div>
+      <canvas id="activityChart" width="800" height="400"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const socket = io();
+
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    const activityChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Variable 1', 'Variable 2', 'Variable 3'],
+        datasets: [{
+          label: 'Activity',
+          data: [0, 0, 0],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+
+    // Función para agregar nuevos datos a la gráfica
+    function addDataToChart(data) {
+      const variables = [data.variable1, data.variable2, data.variable3];
+      activityChart.data.datasets[0].data = variables;
+      activityChart.update();
+      
+      const maxValue = Math.max(...variables);
+      const minValue = Math.min(...variables);
+      document.getElementById('maxValue').innerText = `Máximo: ${maxValue}`;
+      document.getElementById('minValue').innerText = `Mínimo: ${minValue}`;
+    }
+
+    // Escuchar el evento 'data' y llamar a la función addDataToChart cuando se reciba
+    socket.on('data', addDataToChart);
+  </script>
+</body>
+</html>

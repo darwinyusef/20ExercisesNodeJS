@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Activity Monitor</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <canvas id="activityChart" width="800" height="400"></canvas>
+
+  <script>
+    const socket = io();
+
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    const activityChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Activity',
+          data: [],
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          xAxes: [{
+            type: 'time',
+            time: {
+              unit: 'second'
+            }
+          }],
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+
+    // Función para agregar nuevos datos a la gráfica
+    function addDataToChart(data) {
+      activityChart.data.labels.push(data.timestamp);
+      activityChart.data.datasets[0].data.push(data.value);
+      activityChart.update();
+    }
+
+    // Escuchar el evento 'data' y llamar a la función addDataToChart cuando se reciba
+    socket.on('data', addDataToChart);
+  </script>
+</body>
+</html>
