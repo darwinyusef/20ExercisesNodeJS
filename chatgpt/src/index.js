@@ -43,11 +43,25 @@ const openai = new OpenAI({
     apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
 });
 
+let move = {
+    "data": 1
+}
 
+app.param('id', (req, res, next, id) => {
+    move.data = id; 
+    console.log('CALLED ONLY ONCE');
+    next();
+}); 
 
 // Rutas a las páginas HTML
 app.get('/page', (req, res) => {
-  res.sendFile('./index.html', { root: 'public' });
+    res.sendFile('./index.html', { root: 'public' });
+});
+
+app.get('/page/:id', (req, res) => {
+    console.log(move);
+    const id = req.params.id;
+    res.send(`este es el id ${id}`);
 });
 
 app.get('/response/', async (req, res) => {
@@ -55,7 +69,8 @@ app.get('/response/', async (req, res) => {
     const cantidad = req.query.cantidad | 1;
     console.log(mensaje);
     const chatCompletion = await openai.chat.completions.create({
-        messages: [{ role: 'user', content: `primero elimina todas las introducciones solo quiero un json, 
+        messages: [{
+            role: 'user', content: `primero elimina todas las introducciones solo quiero un json, 
         nunca debes debes incluir en el json { "": [] } solo agrega [],  
         limita a entregarme solo el json nada mas, 
         quiero saber aleatoriamente los más populares, un total de ${cantidad}  recomendaciones de ${mensaje} dame los nombres y fechas, los premios serán listados separados por (;) una unica calificación sera de 0 a 5. tambien debes incluir un numero aleatorio entre 500 y 511 e incluirlo en num_aleatorio, todo esto en json para cada uno internamente en el array así:   
