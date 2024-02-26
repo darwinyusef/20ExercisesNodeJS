@@ -11,6 +11,7 @@ const http = require('http');
 const OpenAI = require('openai');
 const { json } = require('body-parser');
 
+
 // Configurar dotenv para cargar variables de entorno
 dotenv.config();
 
@@ -280,7 +281,7 @@ db.serialize(() => {
         if (err) {
             console.error('Error creating table "items":', err.message);
         } else {
-            console.log('Table "items" created or already exists.');
+            // console.log('Table "items" created or already exists.');
         }
     });
 });
