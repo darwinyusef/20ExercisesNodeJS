@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Principal DELETE</h1>
+    <a href="/">GET</a>
+    <a href="/post">POST</a>
+    <a href="/put">PUT</a>
+
+    <script>
+      fetch("http://localhost:3000/users/4", {
+        method: "DELETE",
+      })
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((e) => console.log(e));
+    </script>
+  </body>
+</html>
