@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Reproductor de Audio</title>
+  </head>
+  <body>
+    <h1>Reproductor de Audio</h1>
+    <p>
+      <button id="play-button">Reproducir</button>
+      <button id="stop-button">Detener</button>
+    </p>
+    <!-- controls -->
+    <audio id="audio-player" allow="autoplay" ></audio>
+    <script type="module" src="main.js"></script>
+
+    <div style="display: flex; justify-content: center; align-items: center">
+      <div style="width: 400px; height: 300px">
+        <div
+          data-video="PIh2xe4jnpk"
+          data-autoplay="0"
+          data-loop="1"
+          id="youtube-audio"
+        ></div>
+        <div style="clear: both; margin: 10px; text-align: center"></div>
+      </div>
+    </div>
+    <script
+      type="text/javascript"
+      src="https://www.youtube.com/iframe_api"
+    ></script>
+    <script>
+      var player;
+      function onYouTubeIframeAPIReady() {
+        var ctrlq = document.getElementById("youtube-audio");
+        ctrlq.innerHTML =
+          '<img id="youtube-icon" src=""/><div id="youtube-player"></div>';
+        ctrlq.style.cssText =
+          "width:150px;margin:2em auto;cursor:pointer;cursor:hand;display:none";
+        ctrlq.onclick = toggleAudio;
+
+        player = new YT.Player("youtube-player", {
+          height: "0",
+          width: "0",
+          videoId: ctrlq.dataset.video,
+          playerVars: {
+            autoplay: ctrlq.dataset.autoplay,
+            loop: ctrlq.dataset.loop,
+          },
+          events: {
+            onReady: onPlayerReady,
+            onStateChange: onPlayerStateChange,
+          },
+        });
+      }
+
+      function togglePlayButton(play) {
+        document.getElementById("youtube-icon").src = play
+          ? "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNDd5bGtoZG11YnA2Y2IzZGRlbXA3ZGJ5ODhiOGtucDl0b3RpeTBsYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7kn27lnYSAE9O/giphy.gif"
+          : "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGdhY3E0d2VvMXZpZmxsbm9vM3hoNjJwZHA1bzJlbGZzYjd5ZWd4NCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7ZeLr01g0kAk4K6Q/giphy.gif";
+      }
+
+      function toggleAudio() {
+        if (player.getPlayerState() == 1 || player.getPlayerState() == 3) {
+          player.pauseVideo();
+            (false);
+        } else {
+          player.playVideo();
+            (true);
+        }
+      }
+
+      function onPlayerReady(event) {
+        player.setPlaybackQuality("small");
+        document.getElementById("youtube-audio").style.display = "block";
+          (player.getPlayerState() !== 5);
+      }
+
+      function onPlayerStateChange(event) {
+        if (event.data === 0) {
+            (false);
+        }
+      }
+    </script>
+  </body>
+</html>
