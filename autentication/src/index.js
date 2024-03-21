@@ -33,6 +33,17 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan('dev'));
 
+
+//TODO • REVISAR ESTE CODIGO PORQUE CONTIENE UN MIDDLEWARE PARA TODAS LAS RUTAS
+// router.use((req, res, next) => {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//     res.header("Access-Control-Allow-Headers", "Authorization");
+//     console.log(req.headers['authorization']);
+//     req.next();
+// });
+
+
 function validateEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -110,7 +121,7 @@ app.get('/email', async (req, res) => {
     res.send('enviado');
 });
 
-//TODO  • toca revisarla porque no esta completa la revisión
+//TODO  ♣ debemos incluir todos los elementos necesarios para ejecutar un refresh token y asignar más elementos al core del jwt
 app.post('/refresh-token', async (req, res) => {
     const { refreshToken } = req.body;
 
@@ -136,10 +147,12 @@ app.post('/refresh-token', async (req, res) => {
         res.status(401).send('Token de actualización no válido');
     }
 });
-//TODO  • toca revisarla porque no esta completa la revisión
+
+// ♣
 app.get('/protected', (req, res) => {
-    const token = req.headers['authorization'];
-    console.log(token.replace('Bearer ', ''));
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
     if (!token) {
         return res.status(401).send('Unauthorized');
     }
